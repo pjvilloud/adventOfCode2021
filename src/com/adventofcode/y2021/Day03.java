@@ -1,6 +1,7 @@
 package com.adventofcode.y2021;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * --- Day 3: Binary Diagnostic ---
@@ -1089,8 +1090,21 @@ public class Day03 {
             000111010110""";
 
     public static void main(String[] args) {
+        //Part 1
         calculateSubmarineConsumption(SAMPLE_INPUT);
         calculateSubmarineConsumption(INPUT);
+
+        //Part 2
+        calculateLifeSupportRating(SAMPLE_INPUT);
+        calculateLifeSupportRating(INPUT);
+    }
+
+    public static void calculateLifeSupportRating(String input){
+        int oxygenGeneratorRating = calculateOxygenOrCO2ScrubberRating(input, true);
+        int co2ScrubberRating = calculateOxygenOrCO2ScrubberRating(input, false);
+        System.out.println("The oxygen generator rating is " + oxygenGeneratorRating);
+        System.out.println("The CO2 scrubber rating is " + co2ScrubberRating);
+        System.out.println("The life support rating of the submarine is " + oxygenGeneratorRating * co2ScrubberRating);
     }
 
     public static void calculateSubmarineConsumption(String commands){
@@ -1105,6 +1119,33 @@ public class Day03 {
             epsilonRate.append(nbOfZeroes < nbOfOnes ? '0' : '1');
         }
         System.out.println("The power consumption of the submarine is " + Integer.parseInt(gammaRate.toString(), 2) * Integer.parseInt(epsilonRate.toString(), 2));
+    }
+
+    public static int calculateOxygenOrCO2ScrubberRating(String commands, boolean oxygen){
+        String[] lines = commands.split("\n");
+        for(int i = 0; i < lines[0].length(); i++){
+            if(lines.length == 1){
+                break;
+            }
+            int finalI = i;
+            String[] zeroes = Arrays.stream(lines).filter(s -> s.charAt(finalI) == '0').toArray(String[]::new);
+            String[] ones = Arrays.stream(lines).filter(s -> s.charAt(finalI) == '1').toArray(String[]::new);
+            if(oxygen){
+                if(zeroes.length > ones.length){
+                    lines = zeroes;
+                } else {
+                    lines = ones;
+                }
+            } else {
+                if(zeroes.length <= ones.length){
+                    lines = zeroes;
+                } else {
+                    lines = ones;
+                }
+            }
+
+        }
+        return Integer.parseInt(lines[0], 2);
     }
 
 }
