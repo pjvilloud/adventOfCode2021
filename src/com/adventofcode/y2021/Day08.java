@@ -223,6 +223,8 @@ public class Day08 {
 
     public static void main(String[] args) {
         String[] lines = INPUT.split("\n");
+
+        //Part 1
         final List<Integer> easyDigitsLength = Arrays.asList(2, 3, 4, 7);
         long nbOfEasyDigits = Arrays
                 .stream(lines)
@@ -232,8 +234,8 @@ public class Day08 {
 
         System.out.println("Number of times 1, 4, 7 or 8 appear : " + nbOfEasyDigits);
 
-        Integer result = 0;
-
+        //Part 2
+        int result = 0;
         for (String line : lines){
             String[] lineSplit = line.split(" \\| ");
             List<String> inputs = Arrays.asList(lineSplit[0].split(" "));
@@ -249,6 +251,11 @@ public class Day08 {
         System.out.println("The final result of all added values is " + result);
     }
 
+    /**
+     * Order a string alphabetically
+     * @param s the string to order
+     * @return the string s ordered alphabetically
+     */
     private static String orderString(String s){
         return Stream.of(s.split(""))
                 .sorted(Comparator.comparingInt(o -> Character.toLowerCase(o.charAt(0))))
@@ -281,8 +288,41 @@ public class Day08 {
         mapNumbers.put(8, orderString(inputs.stream().filter(s -> s.length() == 7).findFirst().get()));
         mapDigits.put(mapNumbers.get(8), 8);
 
-        //Others
+        /*
+         *   0:      1:      2:      3:      4:
+         *    aaaa    ....    aaaa    aaaa    ....
+         *   b    c  .    c  .    c  .    c  b    c
+         *   b    c  .    c  .    c  .    c  b    c
+         *    ....    ....    dddd    dddd    dddd
+         *   e    f  .    f  e    .  .    f  .    f
+         *   e    f  .    f  e    .  .    f  .    f
+         *    gggg    ....    gggg    gggg    ....
+         *
+         *     5:      6:      7:      8:      9:
+         *    aaaa    aaaa    aaaa    aaaa    aaaa
+         *   b    .  b    .  .    c  b    c  b    c
+         *   b    .  b    .  .    c  b    c  b    c
+         *    dddd    dddd    ....    dddd    dddd
+         *   .    f  e    f  .    f  e    f  .    f
+         *   .    f  e    f  .    f  e    f  .    f
+         *    gggg    gggg    ....    gggg    gggg
+         *
+         * In all 10 numbers :
+         * - a appears 8 times (not unique but it's 7 - 1)
+         * - b appears 6 times (unique)
+         * - c appears 8 times (now it's the only on that's 8 chars length and not a)
+         * - d appears 7 times (not unique but it's 4 - 1 - b)
+         * - e appears 4 times (unique)
+         * - f appears 9 times (unique)
+         * - g appears 7 times(now it's the only on that's 7 chars length and not d)
+         */
+
+        // _        _
+        //  | _ | =
+        //  |   |
         String a = mapNumbers.get(7).replaceAll("["+mapNumbers.get(1)+"]", "");
+
+
         String b = segmentNbOfOccurences.
                 keySet().
                 stream().
@@ -320,6 +360,7 @@ public class Day08 {
                 filter(s -> segmentNbOfOccurences.get(s) == 7 && !s.equals(d))
                 .findFirst().get();
 
+        //Generating the other numbers
         //2
         mapDigits.put(orderString(a + c + d + e + g), 2);
 
@@ -339,6 +380,5 @@ public class Day08 {
         mapDigits.put(orderString(a + b + c + e + f + g), 0);
 
         return mapDigits;
-
     }
 }
